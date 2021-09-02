@@ -23,6 +23,16 @@
 	</bean>
 	
 	<bean class="survey.SurveyController"/>
+	
+	<bean class="controller.LoginController">
+		<property name="authService" ref="authService"/>
+	</bean>
+	
+	<bean class="controller.LogoutController"/>
+	
+	<bean class="controller.ChangePwdController">
+		<property name="changePasswordService" ref="changePwdSvc"/>
+	</bean>
 </beans>
 
 

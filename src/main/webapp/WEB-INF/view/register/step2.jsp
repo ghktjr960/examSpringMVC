@@ -14,16 +14,19 @@
 		<p>
 			<label><spring:message code="email"/><br>
 			<form:input path="email"/>
+			<form:errors path="email"/>
 			</label>
 		</p>
 		<p>
 			<label><spring:message code="name"/><br>
 			<form:input path="name"/>
+			<form:errors path="name"/>
 			</label>
 		</p>
 		<p>
 			<label><spring:message code="password"/><br>
 			<form:password path="password"/>
+			<form:errors path="password"/>
 			<!-- 
 			<input type="password" name="password" id="password">
 			 -->
@@ -32,6 +35,7 @@
 		<p>
 			<label><spring:message code="password.confirm"/><br>
 			<form:password path="confirmPassword"/>
+			<form:errors path="confirmPassword"/>
 			<!-- 
 			<input type="password" name="confirmPassword" id="confirmPassword">
 			 -->

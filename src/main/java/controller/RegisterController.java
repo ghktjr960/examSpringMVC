@@ -2,6 +2,7 @@ package controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,7 @@ public class RegisterController {
 	 */
 	
 	// 2. @RequsetParam 사용
-	//@RequestMapping(value="/step2", method=RequestMethod.POST)
+	// @RequestMapping(value="/step2", method=RequestMethod.POST)
 	@PostMapping("step2")
 	public String handleStep2(@RequestParam(value="agree", defaultValue="false")Boolean agree, Model model) {
 		System.out.println("handleStep2().POST");
@@ -58,7 +59,7 @@ public class RegisterController {
 	}
 	
 	// GET요청 시 발생하는 오류페이지를 없애기 위해 작성
-	//@RequestMapping(value="/step2", method=RequestMethod.GET)
+	// @RequestMapping(value="/step2", method=RequestMethod.GET)
 	@GetMapping("step2")
 	public String handleStep2() {
 		System.out.println("handleStep2().GET");
@@ -71,18 +72,23 @@ public class RegisterController {
 		this.memberRegisterService = memberRegisterService;
 	}
 	
+	/* 
+	 * @ModelAttribute("formData") jsp로 넘겨줄 커맨드 객체의 이름을 지정해주는 작업
+	 * 커맨드 객체는 지정된 jsp까지는 값을 넘겨준다.
+	 * 커맨드 객체가 지정된 jsp에 전달될 때 기본적인 이름은 RegisterRequest처럼 클래스명에 앞글자만 소문자만 바뀐게
+	 * jsp에서 사용될 기본 디폴트 이름이 된다. 그 이름을 @ModelAttribute("formData")으로 바꿔줄 수 있는거다
+	 */
 	@RequestMapping(value="/step3", method=RequestMethod.POST)
-	// @ModelAttribute("formData") jsp로 넘겨줄 커맨드 객체의 이름을 지정해주는 작업
-	// 커맨드 객체는 지정된 jsp까지는 값을 넘겨준다.
-	// 커맨드 객체가 지정된 jsp에 전달될 때 기본적인 이름은 RegisterRequest처럼 클래스명에 앞글자만 소문자만 바뀐게
-	// jsp에서 사용될 기본 디폴트 이름이 된다. 그 이름을 @ModelAttribute("formData")으로 바꿔줄 수 있는거다
-	public String handlerStep3(@ModelAttribute("formData")RegisterRequest regReq) {
-
+	public String handlerStep3(@ModelAttribute("formData")RegisterRequest regReq, Errors errors) {
+		new RegisterRequestValidator().validate(regReq, errors);
+		if(errors.hasErrors()) {
+			return "register/step2";
+		}
 		try {
 			memberRegisterService.regist(regReq);
 			return "register/step3";
 		} catch (AlreadyExistingMemberException e) {
-			e.printStackTrace();
+			errors.rejectValue("email", "duplicate");
 			return "register/step2";
 		}
 	}
