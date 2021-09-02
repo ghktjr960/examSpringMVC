@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation=
+		"http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd
+		 http://www.springframework.org/schema/context
+		 http://www.springframework.org/schema/context/spring-context.xsd
+		 http://www.springframework.org/schema/aop
+		 http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		 http://www.springframework.org/schema/tx
+		 http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- destroy-method="close"은 default값으로 지정되어 있기 때문에  생략되어도 된다.-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.OracleDriver"/>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+		<property name="user" value="springtester"/>
+		<property name="password" value="1234"/>
+		
+		<property name="maxPoolSize" value="100"/>
+		<property name="maxIdleTime" value="600"/>
+		<property name="idleConnectionTestPeriod" value="300"/>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="memberDao" class="spring.MemberDao">
+		<constructor-arg ref="dataSource"/>
+	</bean>	
+	
+	<bean id="memberRegSvc" class="spring.MemberRegisterService">
+		<constructor-arg ref="memberDao"/>
+	</bean>
+		
+	<bean id="changePwdSvc" class="spring.ChangePasswordService">
+		<property name="memberDao" ref="memberDao"/>
+	</bean>
+	
+</beans>
