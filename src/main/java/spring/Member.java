@@ -64,10 +64,11 @@ public class Member {
 	}
 	
 	public void changePassword(String oldPassword, String newPassword) {
-		if(!password.equals(oldPassword)) {
+		if(password.equals(oldPassword)) {
+			this.password = newPassword;
+		} else {
 			throw new IdPasswordNotMatchingException();
 		}
-		this.password = newPassword;
 	}
 	
 	public boolean matchPassword(String pwd) {

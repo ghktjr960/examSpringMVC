@@ -2,13 +2,16 @@ package spring;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 
 public class MemberDao {
 	
@@ -83,6 +86,31 @@ public class MemberDao {
 		String sql = "select max(\"ID\") from \"MEMBER\"";
 		return jdbcTemplate.queryForObject(sql, Long.class);
 	}
+	
+	public List<Member> selectByRegdate(Date from, Date to){
+		System.out.println("selectByRegdate()\n MemberDao에서 확인");
+		System.out.println("from : " + from);
+		System.out.println("to : " + to);
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from \"MEMBER\" where \"REGDATE\" between ? and ? ");
+		sql.append("order by \"REGDATE\" desc");
+		List<Member> results = jdbcTemplate.query(sql.toString(), 
+				new RowMapper<Member>() {
+					@Override
+					public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+						Member member = new Member(
+								rs.getString("EMAIL"),
+								rs.getString("PASSWORD"),
+								rs.getString("NAME"),
+								rs.getTimestamp("REGDATE")
+								);
+						member.setId(rs.getLong("ID"));
+						return member;
+					}
+				}, from, to);
+		return results;
+	}
+	
 }
 
 
