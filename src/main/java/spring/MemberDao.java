@@ -94,23 +94,15 @@ public class MemberDao {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from \"MEMBER\" where \"REGDATE\" between ? and ? ");
 		sql.append("order by \"REGDATE\" desc");
-		List<Member> results = jdbcTemplate.query(sql.toString(), 
-				new RowMapper<Member>() {
-					@Override
-					public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Member member = new Member(
-								rs.getString("EMAIL"),
-								rs.getString("PASSWORD"),
-								rs.getString("NAME"),
-								rs.getTimestamp("REGDATE")
-								);
-						member.setId(rs.getLong("ID"));
-						return member;
-					}
-				}, from, to);
+		List<Member> results = jdbcTemplate.query(sql.toString(), new MemberRowMapper(), from, to);
 		return results;
 	}
 	
+	public Member selectById(Long id) {
+		String sql = "select * from \"MEMBER\" where \"ID\" = ?";
+		List<Member> results = jdbcTemplate.query(sql, new MemberRowMapper(), id);
+		return results.isEmpty() ? null : results.get(0);
+	}
 }
 
 

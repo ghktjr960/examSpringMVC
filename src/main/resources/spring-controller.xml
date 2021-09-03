@@ -50,6 +50,13 @@
 	<bean class="controller.MemberListController">
 		<property name="memberDao" ref="memberDao"/>
 	</bean>
+
+	<bean class="controller.MemberDetailController">
+		<property name="memberDao" ref="memberDao"/>
+	</bean>
+	
+	<bean class="controller.CommonExceptionHandler"/>
+	
 </beans>
 
 

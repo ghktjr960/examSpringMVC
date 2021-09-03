@@ -35,6 +35,7 @@ public class ChangePwdController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String submit(@ModelAttribute("command")ChangePwdCommand pwdCmd, Errors errors, HttpSession session) {
 		if(errors.hasErrors()) {
+			System.out.println("pwd errors.hasErrors()");
 			return "edit/changePwdForm";
 		}
 		AuthInfo authInfo = (AuthInfo)session.getAttribute("authInfo");
@@ -46,6 +47,7 @@ public class ChangePwdController {
 					pwdCmd.getNewPassword());
 			return "edit/changePwd";
 		} catch (IdPasswordNotMatchingException e) {
+			e.printStackTrace();
 			errors.rejectValue("CurrentPassword", "notMatching");
 			return "edit/changePwdForm";
 		}
