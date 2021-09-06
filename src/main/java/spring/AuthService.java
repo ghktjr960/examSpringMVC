@@ -12,7 +12,7 @@ public class AuthService {
 		if(member == null) {
 			throw new IdPasswordNotMatchingException();
 		}
-		if(member.matchPassword(password)) {
+		if(!member.matchPassword(password)) {
 			throw new IdPasswordNotMatchingException();
 		}
 		return new AuthInfo(member.getId(), member.getEmail(), member.getName());
